@@ -19,4 +19,20 @@ public:
     ~SportIndicatorView() override = default;
 };
 
+// Widgets
+class GForceWidget : public View {
+    float_t lat = 0;
+    float_t lng = 0;
+public:
+    GForceWidget();
+
+    void init(TFT_eSPI *tft) final;
+    void paint(TFT_eSPI *tft) final;
+    bool needUpdate() final;
+
+    void setGForce(float_t lat, float_t lng);
+
+    ~GForceWidget() override = default;
+};
+
 #endif //CLUSTER_SPORT_DISPLAY_PROVIDER_H

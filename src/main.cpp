@@ -13,9 +13,11 @@ void setup() {
     tft->setRotation(0);
     tft->fillScreen(TFT_BLACK);
 
+    View* d[] = {new GForceWidget(), new GForceWidget()};
+
     display = new NKVerticalSplitView(
         new SportIndicatorView(),
-        new SportIndicatorView()
+        new NKStackableView(d, 2)
     );
 
     display->init(tft);

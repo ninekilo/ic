@@ -8,37 +8,36 @@ NKVerticalSplitView::NKVerticalSplitView(View* top, View* bottom) {
     this->bottom = bottom;
 }
 
-void NKVerticalSplitView::init(TFT_eSPI *tft) {
-    tft->setWindow(0, 0, tft->width(), tft->height());
+void NKVerticalSplitView::init(TFT_eSPI* tft) {
+    tft->setViewport(0, 0, TFT_WIDTH, tft->height());
     tft->fillScreen(TFT_BLACK);
 
     // Drawing splitter
-    tft->setWindow(28, 228, 291, 230);
-    tft->fillRectHGradient(0, 0, 91, 2, TFT_BLACK, 0x3333); // 70% of first half
-    tft->fillRectHGradient(91, 0, 39, 2, 0x3333, 0xBBBB); // remaining 30% of first half
-    tft->fillRect(132, 0, 1, 2, 0xBBBB);
-    tft->fillRectHGradient(133, 0, 39, 2, 0xBBBB, 0x3333); // 30% of second half
-    tft->fillRectHGradient(172, 0, 91, 2, 0x3333, TFT_BLACK); // remaining 70% of second half
+    tft->fillRectHGradient(28, 228, 91, 2, TFT_BLACK, 0x3333); // 70% of first half
+    tft->fillRectHGradient(119, 228, 39, 2, 0x3333, 0xBBBB); // remaining 30% of first half
+    tft->fillRect(158, 228, 4, 2, 0xBBBB);
+    tft->fillRectHGradient(162, 228, 39, 2, 0xBBBB, 0x3333); // 30% of second half
+    tft->fillRectHGradient(201, 228, 92, 2, 0x3333, TFT_BLACK); // remaining 70% of second half
 
     // Drawing driving info
-    tft->setWindow(0, 0, tft->width(), 228);
+    tft->setViewport(0, 0, tft->width(), 227);
     this->top->init(tft);
 
     // Drawing detailed info
-    tft->setWindow(0, 230, tft->width(), tft->height());
+    tft->setViewport(0, 231, tft->width(), 228);
     this->bottom->init(tft);
 
-    tft->setWindow(0, 0, tft->width(), tft->height());
+    tft->setViewport(0, 0, tft->width(), tft->height());
 }
 
-void NKVerticalSplitView::loop(TFT_eSPI *tft) {
+void NKVerticalSplitView::loop(TFT_eSPI* tft) {
     if (this->top && this->top->needUpdate()) {
-        tft->setWindow(0, 0, tft->width(), 228);
+        tft->setViewport(0, 0, tft->width(), 228);
         this->top->paint(tft);
     }
 
     if (this->bottom && this->bottom->needUpdate()) {
-        tft->setWindow(0, 230, tft->width(), tft->height());
+        tft->setViewport(0, 230, tft->width(), tft->height());
         this->bottom->paint(tft);
     }
 }

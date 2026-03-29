@@ -27,7 +27,7 @@ void NKVerticalSplitView::init(TFT_eSPI* tft) {
     this->top->init(tft);
 
     // Drawing detailed info
-    tft->setViewport(0, 231, TFT_WIDTH, 228);
+    tft->setViewport(0, 230, TFT_WIDTH, 250);
     this->bottom->init(tft);
 
     tft->setViewport(0, 0, TFT_WIDTH, TFT_HEIGHT);
@@ -40,8 +40,24 @@ void NKVerticalSplitView::loop(TFT_eSPI* tft) {
     }
 
     if (this->bottom && this->bottom->needUpdate()) {
-        tft->setViewport(0, 230, TFT_WIDTH, TFT_HEIGHT);
+        tft->setViewport(0, 230, TFT_WIDTH, 250);
         this->bottom->paint(tft);
+    }
+}
+
+void drawIndexIndicator(TFT_eSPI* painter, const int8_t size, const int8_t index) {
+    // Draw splitter to separate current view and index indicator
+    painter->setViewport(0, 0, TFT_WIDTH, TFT_HEIGHT);
+    drawSplitter(painter, 458);
+
+    // Set viewport to the area for index indicator
+    painter->setViewport(0, 460, TFT_WIDTH, 20);
+
+    const int start = (TFT_WIDTH - (14 * size)) / 2; // Center the indicators
+
+    // Draw indicator
+    for (int8_t i = 0; i < size; i++) {
+        painter->fillRect(start + (i * 14), 8, 4, 4, (i == index ? TFT_WHITE : TFT_LIGHTGREY));
     }
 }
 
@@ -61,35 +77,27 @@ void NKStackableView::init(TFT_eSPI* painter) {
     this->dimension[0] = static_cast<int16_t>(painter->getViewportY());
     this->dimension[1] = static_cast<int16_t>(painter->getViewportHeight());
 
-    painter->setViewport(0, this->dimension[1], TFT_WIDTH, 228);
+    painter->setViewport(0, this->dimension[0], TFT_WIDTH, 227);
     this->views[this->index]->init(painter);
 
     painter->setViewport(0, this->dimension[0], TFT_WIDTH, this->dimension[1]);
+    drawIndexIndicator(painter, this->size, this->index);
 }
 
 void NKStackableView::paint(TFT_eSPI* painter) {
     // Set viewport to the area for painting current view
-    painter->setViewport(0, this->dimension[0], TFT_WIDTH, 228);
+    painter->setViewport(0, this->dimension[0], TFT_WIDTH, 227);
 
     if (this->idxChange) {
         this->views[this->index]->init(painter);
         this->idxChange = false;
 
-        // Draw splitter to separate current view and index indicator
-        drawSplitter(painter, static_cast<int16_t>(this->dimension[0] + 228));
-
-        // Set viewport to the area for index indicator
-        painter->setViewport(0, TFT_HEIGHT-20, TFT_WIDTH, 20);
-
-        const int start = (TFT_WIDTH - (14 * this->size)) / 2; // Center the indicators
-
-        // Draw indicator
-        for (int8_t i = 0; i < this->size; i++) {
-            painter->fillRect(start + (i * 14), TFT_HEIGHT-8, 4, 4, (i == this->index ? TFT_WHITE : TFT_LIGHTGREY));
-        }
-    }else this->views[this->index]->paint(painter);
-
-    painter->setViewport(0, this->dimension[0], TFT_WIDTH, this->dimension[1]);
+        painter->setViewport(0, this->dimension[0], TFT_WIDTH, this->dimension[1]);
+        drawIndexIndicator(painter, this->size, this->index);
+    }else {
+        this->views[this->index]->paint(painter);
+        painter->setViewport(0, this->dimension[0], TFT_WIDTH, this->dimension[1]);
+    }
 }
 
 bool NKStackableView::needUpdate() {

@@ -89,7 +89,6 @@ void SportIndicatorView::paint(TFT_eSPI* tft) {
     drawSpeed(tft, this->speed);
     drawRPM(tft, this->rpm);
     drawTime(tft, this->time);
-    // tft->drawString("N", 160, 114);
 }
 
 bool SportIndicatorView::needUpdate() {

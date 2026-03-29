@@ -7,7 +7,6 @@
 #include "display/display_provider.h"
 
 class SportIndicatorView : public View {
-private:
     int8_t gear = 0;
     int8_t speed = 0;
     int16_t rpm = 0;

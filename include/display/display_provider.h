@@ -42,8 +42,19 @@ public:
 
 class NKStackableView : public View {
 public:
-    explicit NKStackableView(View** views);
-    virtual void setIndex(int idx);
+    explicit NKStackableView(View** views, int8_t size);
+    void setIndex(int8_t idx);
+    void init(TFT_eSPI* painter) override;
+    void paint(TFT_eSPI* painter) override;
+    bool needUpdate() override;
+
+    ~NKStackableView() override = default;
+private:
+    int16_t dimension[2] = {0,}; // y, height (X must be 0; Width must be TFT_WIDTH)
+    View** views = nullptr;
+    int8_t index = 0;
+    bool idxChange = false;
+    int8_t size = 0;
 };
 
 #endif //DISPLAY_PROVIDER_H
